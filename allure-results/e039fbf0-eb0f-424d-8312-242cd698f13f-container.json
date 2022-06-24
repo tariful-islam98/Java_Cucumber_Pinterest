@@ -1,0 +1,1 @@
+{"uuid":"e039fbf0-eb0f-424d-8312-242cd698f13f","name":"Scenario: Notification","children":["6dada836-dcc9-4fc0-8da3-708dbe1404ac"],"befores":[],"afters":[{"name":"stepDefinitions.packageOne.Hooks.AfterScenario()","status":"passed","stage":"finished","steps":[],"attachments":[],"parameters":[],"start":1650798288540,"stop":1650798288886}],"start":1650798271729,"stop":1650798288887}
