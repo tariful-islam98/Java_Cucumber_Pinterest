@@ -57,4 +57,4 @@ allure serve allure-report
 <br/><br/>
 
 ## Author:
-This project was developed by [Tariful Islam Abir](https://github.com/tarif-qups) under supervission of **Quality Up Services (QUPS)**.
+This project was developed by [Tariful Islam Abir](https://github.com/tariful-islam98) under supervission of **Quality Up Services (QUPS)**.
