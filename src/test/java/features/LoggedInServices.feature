@@ -7,7 +7,7 @@ Feature: Different services
     Then Home Page is visible
 
   #TC_4.3
-  @Home
+  @Services
   Scenario Outline: User Searches a topic
     Given User clicks search box
     And types a "<topic>"
@@ -19,14 +19,14 @@ Feature: Different services
       | cricket |
 
   #TC_4.4
-  @Home
+  @Services
   Scenario: Notification
     Given user clicks notification icon
     And selects a notification
     Then notification detail page loaded
 
   #TC_4.5
-  @Home
+  @Services
   Scenario Outline: user sends message
     Given User clicks message icon
     And user clicks new message button
@@ -41,7 +41,7 @@ Feature: Different services
       | abir0dhaka@gmail.com | Hello   |
 
   #TC_4.6.1
-  @Home
+  @Services
   Scenario Outline: user updates profile
     Given User clicks profile icon
     And clicks edit profile button
