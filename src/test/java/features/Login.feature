@@ -1,6 +1,6 @@
 Feature: Login User
 
-  @Home
+  @Login
   Scenario Outline: Check login is successful with valid credentials
     Given user is in login page
     When user Enters "<Email>" and "<Password>"

@@ -4,10 +4,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Properties;
 
 public class TestBase {
 
@@ -15,7 +13,7 @@ public class TestBase {
 
     public WebDriver WebDriverManager() throws IOException
     {
-        FileInputStream fis = new FileInputStream(System.getProperty("user.dir")+"//src//test//resources//global.properties");
+        /*FileInputStream fis = new FileInputStream(System.getProperty("user.dir")+"//src//test//resources//global.properties");
         Properties prop = new Properties();
         prop.load(fis);
         String url = prop.getProperty("QAUrl");
@@ -23,7 +21,11 @@ public class TestBase {
         String browser_maven=System.getProperty("browser");
         // result = testCondition ? value1 : value2
 
-        String browser = browser_maven!=null ? browser_maven : browser_properties;
+        String browser = browser_maven!=null ? browser_maven : browser_properties;*/
+
+        ResourceHelper global = new ResourceHelper().getResource("global");
+        String url = global.getString("QAUrl");
+        String browser = global.getString("browser");
 
         if(driver == null)
         {

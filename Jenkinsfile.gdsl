@@ -1,0 +1,88 @@
+node('master') {
+    def url = "${env.URL}"
+    def browser = "${env.BROWSER}"
+    def tags = "${env.TAGS}"
+    def module = "${tags.replaceAll(/@/, '')}"
+    def reportDir = "${env.WORKSPACE}/target/cucumber.json"
+    def webhookUrl = "https://spolllc.webhook.office.com/webhookb2/c779b36b-2ea3-4537-930e-d297ed26ec71@03c0a86d-b1d2-42b7-a4a0-d8db4fa07dbd/JenkinsCI/b7fef0985e7b41b28dd18ff44a80584d/f6d8045a-ecea-4e62-be14-91d2c827e599"
+    def gChatUrl = "https://chat.googleapis.com/v1/spaces/AAAAX8RklvA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=87YPloRrYP_QJxuMwp6pxOEJrMyoXYiQQ4I2q5Irg1Q%3D"
+    def totalCount = 0
+    def failedCount = 0
+//    def skippedCount = 0
+    def passedCount = 0
+    def percentage = 0
+
+    stage("Checkout Repository") {
+        checkout scm
+    }
+
+    stage("Run Tests") {
+        println(url)
+        println(browser)
+        println(tags)
+        bat "mvn clean test -DQAUrl=${url} -Dbrowser=${browser} -Dcucumber.filter.tags=${tags}"
+    }
+
+    stage("Generate test results") {
+        def reports = readJSON text: readFile(reportDir)
+        for (i in 0..<reports.size()) {
+            def testCases = reports[i]."elements"
+            for (j in 0..<testCases.size()) {
+                if (testCases[j]."after" != null) {
+                    totalCount++
+                    if (testCases[j].toString().contains("\"status\":\"failed\"")
+                            || testCases[j].toString().contains("\"status\":\"skipped\"")) {
+                        failedCount++
+                    }
+                }
+            }
+        }
+
+        passedCount = (totalCount - failedCount)
+
+        percentage = (passedCount * 100) / totalCount
+    }
+
+    /*stage("Send Teams notification") {
+        office365ConnectorSend(
+                color: failedCount == 0 ? "#00FF00" : "#ff0000",
+                message: "Latest status of build #${BUILD_NUMBER}\n\n",
+                status: "Build ${currentBuild.currentResult}",
+                factDefinitions: [
+                        [name: "Module:", template: "${module}"],
+                        [name: "Failed:", template: "${failedCount}"],
+                        [name: "Passed:", template: "${passedCount}"],
+                        [name: "Passed Percentage:", template: "${percentage}%"],
+                        [name: "Total run:", template: "${totalCount}"],
+                ],
+                webhookUrl: webhookUrl
+        )
+    }*/
+
+   /* stage("Send Slack notification") {
+        def color1 = failedCount == 0 ? "#00FF00" : "#ff0000"
+        slackSend channel: "#qa-testing",
+                color: "${color1}",
+                message: "Latest status of build #${BUILD_NUMBER}\n\n " +
+                        "Build ${currentBuild.currentResult}\n\n " +
+                        "Module: ${module}\n" +
+                        "Failed: ${failedCount}\n" +
+                        "Passed: ${passedCount}\n" +
+                        "Passed Percerntage: ${percentage}%\n" +
+                        "Total run: ${totalCount}"
+    }*/
+
+    stage("Send GChat notification") {
+        googlechatnotification(
+                message: "Latest status of build #${BUILD_NUMBER}\n\n" +
+                        "Module: ${module}\n\n" +
+                        "Failed: ${failedCount}\n\n" +
+                        "Passed: ${passedCount}\n\n" +
+                        "Passed Percerntage: ${percentage}%\n\n" +
+                        "Total run: ${totalCount}\n\n" +
+                        "Status: Build ${currentBuild.currentResult}",
+                suppressInfoLoggers: true,
+                url: "${gChatUrl}"
+        )
+    }
+}
